@@ -1,0 +1,14 @@
+# Copyright 2014 Lasse Dissing
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+Import('*')
+debug = env.Clone()
+debug.Append(CPPFLAGS = ['-g', '-O0'])
+debug.Append(CPPDEFINES = ['LOGGING'])
+
+debugObjects = map( (lambda s: debug.StaticObject(target = "dbg" + s.replace(".cpp",".o"), source = s)), sources)
+debug.Program(target = 'PhobetorDebug', source=debugObjects)
+debug.Alias('debug','PhobetorDebug')
+debug.Default('PhobetorDebug')
