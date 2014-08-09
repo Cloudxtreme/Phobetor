@@ -15,7 +15,7 @@ env = Environment()
 env.Append(CPPPATH = ['../../libs','../../src'])
 env.Append(LIBPATH = ['../../libs'])
 env.Append(LIBS = ['GLEW'])
-env.Append(CPPFLAGS = ['-Wall', '-Werror'])
+env.Append(CPPFLAGS = ['-Wall', '-Werror','--std=c++11'])
 
 sources = []
 

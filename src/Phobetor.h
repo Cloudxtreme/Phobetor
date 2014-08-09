@@ -18,6 +18,7 @@
 #include <sstream>
 
 //STL containers
+#include <array>
 #include <vector>
 #include <map>
 #include <string>
@@ -26,6 +27,7 @@
 
 //Other STL stuff
 //#include <functional>
+#include <algorithm>
 
 //GL libraries
 #include <GL/glew.h>
