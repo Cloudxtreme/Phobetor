@@ -7,6 +7,7 @@
 #define __RENDERER_SHADER_H__
 
 #include <Phobetor.h>
+#include <math/Math.h>
 
 class Shader {
 
@@ -18,7 +19,7 @@ public:
 
 	GLint				GetAttributeLocation(const char* attribute);
 
-	void				UseShader();
+	void				UseShader(Mat4& projectionMatrix);
 
 private:
 
@@ -30,6 +31,8 @@ private:
 	GLuint				vertexShader;
 	GLuint				fragmentShader;
 	GLuint				program;
+
+	GLuint				projectionMatrixLocation;
 
 };
 

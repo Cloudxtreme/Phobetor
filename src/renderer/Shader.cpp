@@ -46,14 +46,19 @@ bool Shader::SetupShader(const char* vertex, const char* fragment) {
 
 	glBindAttribLocation(program, 0, "position");
 	glBindAttribLocation(program, 1, "color");
+
 	
 	glLinkProgram(program);
 	glValidateProgram(program);
 	glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
 	if (linkStatus == 0) {
-		printf("Error linking program\n");
+		ERROR("Error linking program");
 		return false;
 	}
+
+
+	projectionMatrixLocation = glGetUniformLocation(program, "projectionViewMatrix");
+
 	return true;	
 }
 
@@ -61,8 +66,9 @@ GLint Shader::GetAttributeLocation(const char* attribute) {
 	return glGetAttribLocation(program, attribute);
 }
 
-void Shader::UseShader() {
+void Shader::UseShader(Mat4& projectionMatrix) {
 	glUseProgram(program);
+	glUniformMatrix4fv(projectionMatrixLocation, 1, true, projectionMatrix.GetRaw());
 }
 
 bool Shader::CheckCompileStatus(GLuint id, const char* filename) {
@@ -70,7 +76,7 @@ bool Shader::CheckCompileStatus(GLuint id, const char* filename) {
 
 	glGetShaderiv(id, GL_COMPILE_STATUS, &compileStatus);
 	if (compileStatus == 0) {
-		std::printf("Error compiling %s\n:",filename);
+		ERROR("Error compiling ",filename);
 		
 		int logLength = 0;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &logLength);
@@ -89,7 +95,7 @@ char* Shader::LoadString(const char* filename) {
 	FILE* file = fopen(filename, "r");
 
 	if (!file) {
-		std::printf("Unable to open file %s\n", filename);
+		ERROR("Unable to open file ", filename);
 		return NULL;
 	}
 	
