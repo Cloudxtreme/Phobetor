@@ -5,7 +5,10 @@
 sources = []
 
 subdirs = Split("""
+asset
+math
 renderer
+scene
 system
 """)
 

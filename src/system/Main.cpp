@@ -8,12 +8,16 @@
 #include "Timer.h"
 #include "../renderer/Mesh.h"
 #include "../renderer/Shader.h"
+#include "../renderer/Camera.h"
+#include "../scene/Node.h"
+#include "../scene/Geometry.h"
+#include "../asset/OBJLoader.h"
 
 float data[] = {
-	-0.5f, 0.5f, 0.0f,	1.0f, 0.0f, 0.0f, 1.0f,
-	-0.5f,-0.5f, 0.0f,	0.0f, 1.0f, 0.0f, 1.0f,
-	 0.5f,-0.5f, 0.0f,	0.0f, 0.0f, 1.0f, 1.0f,
-	 0.5f, 0.5f, 0.0f,	1.0f, 1.0f, 1.0f, 1.0f
+	-0.5f, 0.5f, 0.0f,	1.0f, 0.0f, 0.0f,
+	-0.5f,-0.5f, 0.0f,	0.0f, 1.0f, 0.0f,
+	 0.5f,-0.5f, 0.0f,	0.0f, 0.0f, 1.0f,
+	 0.5f, 0.5f, 0.0f,	0.5f, 0.5f, 0.5f
 };
 
 unsigned int indices[] = {
@@ -36,7 +40,7 @@ bool initOpenGL(Window& window) {
 		return false;
 	}
 
-	glGetError(); //Clear errors
+	glGetError(); //Clear errors from GLEW
 	return true;
 }
 
@@ -57,6 +61,7 @@ void error(const char* location) {
 	}
 }
 
+
 int main() {
 
 	initLogger(LOG_DEBUG);
@@ -72,19 +77,26 @@ int main() {
 		return -1;
 	}
 
+	Camera camera;
+
 	Shader shader;
 
-	shader.SetupShader("shaders/simple.vertex","shaders/simple.fragment");
-	Mesh quad;
-	
-	quad.SetData(data, sizeof(data), 28);
-	quad.SetIndices(indices, sizeof(indices));
-	quad.UploadToGPU();
 
+	shader.SetupShader("shaders/simple.vertex","shaders/simple.fragment");
+	
+
+	OBJLoader loader;
+
+	Node* rootNode = new Node();
+
+	rootNode->AttachChild(loader.Load("assets/Cube.obj"));
+
+	int index = 0;
 
 	Timer timer;
 	
 	//DO NOT PUT ANY TIME CONSUMING CODE BETWEEN TIMER INITIALISATION AND LOOP!!!
+
 
 	while (!window.ShouldClose()) {
 	
@@ -95,12 +107,20 @@ int main() {
 
 		timer.OnRender();
 
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
 
 		glClearColor(1.0f,1.0f,1.0f,1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		shader.UseShader();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		quad.Render();
+		camera.RotateCameraEuler((index % 240) * 0.026,0.7854,0.7854);
+		camera.MoveCamera(0,0,-2- (std::sin((index % 240) * 0.026)*0.5));
+		index++;
+		Mat4 projectionView = camera.GetProjectionView();
+		shader.UseShader(projectionView);
+		error("Shader");
+
+		rootNode->Render();
 
 		window.SwapBuffers();
 		window.PollEvents();
