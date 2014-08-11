@@ -95,7 +95,7 @@ inline Quaternion Quaternion::operator-(const Quaternion& q) const {
 inline Quaternion Quaternion::operator*(const Quaternion& q) const {
 	return Quaternion(
 			x * q.w + y * q.z - z * q.y + w * q.x,
-			-x * q.z + y * q.w + z * q.x + w * q.z,
+			-x * q.z + y * q.w + z * q.x + w * q.y,
 			x * q.y - y * q.x + z *q.w + w * q.z,
 			-z * q.x - y * q.y - z * q.z + w * q.w);
 }
