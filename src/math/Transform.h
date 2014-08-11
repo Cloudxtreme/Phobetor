@@ -153,23 +153,14 @@ inline bool Transform::IsIdentity() {
 
 inline Mat4 Transform::ToMatrix() const {
 	Mat4 res;
-	Mat3 rot = rotation.ToRotationMatrix();
-	res.m00 = rot.m00;
-	res.m01 = rot.m01;
-	res.m02 = rot.m02;
-	res.m10 = rot.m10;
-	res.m11 = rot.m11;
-	res.m12 = rot.m12;
-	res.m20 = rot.m20;
-	res.m21 = rot.m21;
-	res.m22 = rot.m22;
+	Mat4 rot = rotation.ToRotationMatrix().ToMat4();
+	Mat4 trans;
+	trans.m03 = translation.x;
+	trans.m13 = translation.y;
+	trans.m23 = translation.z;
+	trans = trans * scale;
 
-	res.m03 = translation.x;
-	res.m13 = translation.y;
-	res.m23 = translation.z;
-	res.m33 = 1.0f;
-
-	return res * scale;
+	return rot * trans;
 
 }
 
