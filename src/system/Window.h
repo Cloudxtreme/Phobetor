@@ -41,7 +41,7 @@ public:
 	int					GetPosY() const;
 	void				SetPosition(const int width, const int height);
 
-
+	GLFWwindow*			GetWindowPointer() const;
 
 private:
 	GLFWwindow* window;

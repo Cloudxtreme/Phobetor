@@ -133,3 +133,7 @@ int Window::GetPosY() const {
 void Window::SetPosition(const int width, const int height) {
 	glfwSetWindowPos(window, width, height);
 }
+
+GLFWwindow* Window::GetWindowPointer() const {
+	return window;
+}

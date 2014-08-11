@@ -62,6 +62,32 @@ void error(const char* location) {
 	}
 }
 
+void processInput(GLFWwindow* windowPtr, Camera& camera) {
+
+	if (glfwGetKey(windowPtr, GLFW_KEY_W)) {
+		camera.MoveCamera(0.0f, 0.0f, 0.01f);
+	} else if (glfwGetKey(windowPtr, GLFW_KEY_S)) {
+		camera.MoveCamera(0.0f, 0.0f, -0.01f);
+	}
+
+	if (glfwGetKey(windowPtr, GLFW_KEY_A)) {
+		camera.MoveCamera(0.01f, 0.0f ,0.0f);
+	} else if (glfwGetKey(windowPtr, GLFW_KEY_D)) {
+		camera.MoveCamera(-0.01f, 0.0f, 0.0f);
+	}
+
+	if (glfwGetKey(windowPtr, GLFW_KEY_LEFT)) {
+		camera.RotateCameraEuler(0.001f, 0.0f, 0.0f);
+	} else if (glfwGetKey(windowPtr, GLFW_KEY_RIGHT)) {
+		camera.RotateCameraEuler(-0.001f, 0.0f, 0.0f);
+	}
+
+	if (glfwGetKey(windowPtr, GLFW_KEY_ESCAPE)) {
+		glfwSetWindowShouldClose(windowPtr,1);
+	}
+
+}
+
 void walkSceneGraph(Node* rootNode, Shader& shader) {
 	for (Spatial* child : rootNode->GetChildren()) {
 		switch (child->GetSpatialType()) {
@@ -109,7 +135,6 @@ int main() {
 
 	Node* modelNode = loader.Load("assets/Cube.obj");
 	rootNode->AttachChild(modelNode);
-	modelNode->Move(0,-1,0);
 	modelNode->UpdateState();
 
 	Timer timer;
@@ -136,6 +161,8 @@ int main() {
 		shader.UseShader(projectionView);
 		////shader.SetModelMatrix(rootNode->)
 		error("Shader");
+
+		processInput(window.GetWindowPointer(),camera);
 
 		walkSceneGraph(rootNode, shader);
 		
