@@ -18,6 +18,8 @@
 ===============================================================================
 */
 
+class Mat4; //Forward declare for Mat3.ToMat4 function
+
 class Mat3 {
 public:
 
@@ -71,7 +73,7 @@ public:
 	Mat3&					TransposeSelf();
 
 	//Quaternion				ToQuaternion();
-	//Mat4					ToMat4();
+	Mat4					ToMat4() const;
 
 	const char*				ToString(int precision = 2) const;
 };
@@ -328,6 +330,16 @@ inline Mat3& Mat3::TransposeSelf() {
 	m21 = tm12;
 
 	return *this;
+}
+
+inline Mat4 Mat3::ToMat4() const {
+	Mat4 mat4;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			mat4.data[i*4+j] = data[i*3+j];
+		}
+	}
+	return mat4;
 }
 
 
