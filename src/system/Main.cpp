@@ -10,6 +10,7 @@
 #include "../renderer/Shader.h"
 #include "../renderer/Camera.h"
 #include "../scene/Node.h"
+#include "../scene/Spatial.h"
 #include "../scene/Geometry.h"
 #include "../asset/OBJLoader.h"
 
@@ -61,6 +62,22 @@ void error(const char* location) {
 	}
 }
 
+void walkSceneGraph(Node* rootNode, Shader& shader) {
+	for (Spatial* child : rootNode->GetChildren()) {
+		switch (child->GetSpatialType()) {
+			case Spatial::Geometry: {
+				Geometry* geom = static_cast<Geometry*>(child);
+				shader.SetModelMatrix(geom->GetWorldTransform().ToMatrix());
+				geom->GetMesh()->Render();
+				break;
+			}
+			case Spatial::Node: {
+				walkSceneGraph(static_cast<Node*>(child), shader);
+				break;						
+			}
+		}
+	}
+}
 
 int main() {
 
@@ -78,6 +95,7 @@ int main() {
 	}
 
 	Camera camera;
+	camera.MoveCamera(0,0,-2);
 
 	Shader shader;
 
@@ -89,9 +107,10 @@ int main() {
 
 	Node* rootNode = new Node();
 
-	rootNode->AttachChild(loader.Load("assets/Cube.obj"));
-
-	int index = 0;
+	Node* modelNode = loader.Load("assets/Cube.obj");
+	rootNode->AttachChild(modelNode);
+	modelNode->Move(0,-1,0);
+	modelNode->UpdateState();
 
 	Timer timer;
 	
@@ -113,14 +132,13 @@ int main() {
 		glClearColor(1.0f,1.0f,1.0f,1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
-		camera.RotateCameraEuler((index % 240) * 0.026,0.7854,0.7854);
-		camera.MoveCamera(0,0,-2- (std::sin((index % 240) * 0.026)*0.5));
-		index++;
 		Mat4 projectionView = camera.GetProjectionView();
 		shader.UseShader(projectionView);
+		////shader.SetModelMatrix(rootNode->)
 		error("Shader");
 
-		rootNode->Render();
+		walkSceneGraph(rootNode, shader);
+		
 
 		window.SwapBuffers();
 		window.PollEvents();

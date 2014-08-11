@@ -11,18 +11,23 @@
 
 class Node: public Spatial {
 
+
 public:
-						Node();
+								Node();
 
-	int					GetNumberOfChildren() const;
-	int					AttachChild(Spatial* child);
-	int					DetachChild(Spatial* child);
-	void				DetachAllChildren();
-	bool				HasChild(Spatial* child) const;
+	int							GetNumberOfChildren() const;
+	int							AttachChild(Spatial* child);
+	int							DetachChild(Spatial* child);
+	void						DetachAllChildren();
+	bool						HasChild(Spatial* child) const;
+	const std::list<Spatial*>	GetChildren() const;
 
-	virtual void		Render();
-
+	virtual SpatialType			GetSpatialType() const;
+	
+	
 protected:
+
+	virtual void		UpdateWorldData();
 
 	int 				GetIndexOfChild(Spatial* child) const;
 
@@ -30,6 +35,8 @@ protected:
 
 	typedef std::list<Spatial*>::const_iterator ConstIterator_t;
 	typedef std::list<Spatial*>::iterator Iterator_t;
+
+
 };
 
 #endif //__SCENE_NODE_H__

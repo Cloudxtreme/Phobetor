@@ -30,12 +30,14 @@ public:
 	float				GetScale() const;
 
 	void				SetIdentity();
-	void				Combine(const Transform& trans);
+	Transform			Combine(const Transform& trans) const;
 
 	Vec3				Apply(const Vec3& vector) const;
 	Vec3				ApplyInverse(const Vec3& vector) const;
 
 	bool				IsIdentity();
+
+	Mat4				ToMatrix() const;
 
 	Quaternion			rotation;
 	Vec3				translation;
@@ -114,12 +116,11 @@ inline void Transform::SetIdentity() {
 	isIdentityHint = true;
 }
 
-inline void Transform::Combine(const Transform& t) {
-	scale *= t.scale;
-	rotation = t.rotation * rotation;
-	translation *= t.scale;
-	translation = t.rotation * translation;
-	translation += t.translation;
+inline Transform Transform::Combine(const Transform& t) const {
+	float s = scale * t.scale;
+	Vec3 m = translation + t.translation;
+	Quaternion q = rotation * t.rotation;
+	return Transform(m,q,s);
 }
 
 inline Vec3 Transform::Apply(const Vec3& vector) const {
@@ -148,6 +149,28 @@ inline bool Transform::IsIdentity() {
 	}
 	
 	return false;
+}
+
+inline Mat4 Transform::ToMatrix() const {
+	Mat4 res;
+	Mat3 rot = rotation.ToRotationMatrix();
+	res.m00 = rot.m00;
+	res.m01 = rot.m01;
+	res.m02 = rot.m02;
+	res.m10 = rot.m10;
+	res.m11 = rot.m11;
+	res.m12 = rot.m12;
+	res.m20 = rot.m20;
+	res.m21 = rot.m21;
+	res.m22 = rot.m22;
+
+	res.m03 = translation.x;
+	res.m13 = translation.y;
+	res.m23 = translation.z;
+	res.m33 = 1.0f;
+
+	return res * scale;
+
 }
 
 #endif //__MATH_TRANSFORM_H__

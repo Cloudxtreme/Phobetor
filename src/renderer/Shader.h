@@ -19,7 +19,9 @@ public:
 
 	GLint				GetAttributeLocation(const char* attribute);
 
-	void				UseShader(Mat4& projectionMatrix);
+	void				UseShader(const Mat4& projectionMatrix);
+
+	void				SetModelMatrix(const Mat4& modelMatrix);
 
 private:
 
@@ -33,6 +35,7 @@ private:
 	GLuint				program;
 
 	GLuint				projectionMatrixLocation;
+	GLuint				modelMatrixLocation;
 
 };
 

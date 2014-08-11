@@ -97,12 +97,24 @@ Spatial& Spatial::Rotate(float xAngle, float yAngle, float zAngle) {
 	return *this;
 }
 
-const Node* Spatial::GetParent() const {
+const Spatial* Spatial::GetParent() const {
 	return parent;
 }
 
-Node* Spatial::SetParent(Node* newParent) {
-	Node* former = parent;
+void Spatial::UpdateState() {
+	UpdateWorldData();
+}
+
+Spatial* Spatial::SetParent(Spatial* newParent) {
+	Spatial* former = parent;
 	parent = newParent;
 	return former;
+}
+
+void Spatial::UpdateWorldData() {
+	if (parent) {
+		worldTransform = parent->worldTransform.Combine(localTransform);
+	} else {
+		worldTransform = localTransform;
+	}
 }

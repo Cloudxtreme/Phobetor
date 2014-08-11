@@ -13,6 +13,6 @@ Mesh* Geometry::GetMesh() const {
 	return mesh;
 }
 
-void Geometry::Render() {
-	mesh->Render();
+Spatial::SpatialType Geometry::GetSpatialType() const {
+	return Spatial::Geometry;
 }

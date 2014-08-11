@@ -9,10 +9,15 @@
 #include <Phobetor.h>
 #include <math/Math.h>
 
-class Node;
 
 class Spatial {
+	
+	friend class Node;
+
 public:
+
+	enum SpatialType { Node = 0, Geometry};
+
 						Spatial();
 						explicit Spatial(const Transform& transform);
 
@@ -41,19 +46,23 @@ public:
 	Spatial&			Rotate(float xAngle, float yAngle, float zAngle);
 
 
-	const Node*			GetParent() const;
+	const Spatial*		GetParent() const;
 
-	virtual void		Render() = 0;
-					
+	void				UpdateState();
+
+	virtual SpatialType	GetSpatialType() const = 0;
+
 
 protected:
 
-	Node*				SetParent(Node* parent);
+	Spatial*			SetParent(Spatial* parent);
+
+	virtual void		UpdateWorldData();
 
 	Transform 		 	localTransform;
 	Transform			worldTransform;
 
-	Node*			 	parent; 
+	Spatial*			parent; 
 
 private:
 

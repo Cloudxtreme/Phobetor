@@ -58,6 +58,7 @@ bool Shader::SetupShader(const char* vertex, const char* fragment) {
 
 
 	projectionMatrixLocation = glGetUniformLocation(program, "projectionViewMatrix");
+	modelMatrixLocation = glGetUniformLocation(program, "modelMatrix");
 
 	return true;	
 }
@@ -66,9 +67,13 @@ GLint Shader::GetAttributeLocation(const char* attribute) {
 	return glGetAttribLocation(program, attribute);
 }
 
-void Shader::UseShader(Mat4& projectionMatrix) {
+void Shader::UseShader(const Mat4& projectionMatrix) {
 	glUseProgram(program);
 	glUniformMatrix4fv(projectionMatrixLocation, 1, true, projectionMatrix.GetRaw());
+}
+
+void Shader::SetModelMatrix(const Mat4& modelMatrix) {
+	glUniformMatrix4fv(modelMatrixLocation, 1, true, modelMatrix.GetRaw());
 }
 
 bool Shader::CheckCompileStatus(GLuint id, const char* filename) {

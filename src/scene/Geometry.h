@@ -18,7 +18,7 @@ public:
 	void				SetMesh(Mesh* mesh);
 	Mesh*				GetMesh() const;
 
-	virtual void		Render();
+	virtual SpatialType	GetSpatialType() const;
 
 protected:
 

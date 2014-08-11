@@ -15,6 +15,7 @@ int Node::GetNumberOfChildren() const {
 
 int Node::AttachChild(Spatial* child) {
 	children.push_back(child);
+	child->SetParent(this);
 	return children.size();
 }
 
@@ -53,8 +54,17 @@ int Node::GetIndexOfChild(Spatial* child) const {
 	return -1;
 }
 
-void Node::Render() {
+void Node::UpdateWorldData() {
+	Spatial::UpdateWorldData();
 	for (Spatial* spatial : children) {
-		spatial->Render();
+		spatial->UpdateState();
 	}
+}
+
+const std::list<Spatial*> Node::GetChildren() const {
+	return children;
+}
+
+Spatial::SpatialType Node::GetSpatialType() const {
+	return Spatial::Node;
 }
