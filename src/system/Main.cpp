@@ -65,21 +65,27 @@ void error(const char* location) {
 void processInput(GLFWwindow* windowPtr, Camera& camera) {
 
 	if (glfwGetKey(windowPtr, GLFW_KEY_W)) {
-		camera.MoveCamera(0.0f, 0.0f, 0.01f);
+		camera.MoveCameraForward(0.01f);
 	} else if (glfwGetKey(windowPtr, GLFW_KEY_S)) {
-		camera.MoveCamera(0.0f, 0.0f, -0.01f);
+		camera.MoveCameraForward(-0.01f);
 	}
 
 	if (glfwGetKey(windowPtr, GLFW_KEY_A)) {
-		camera.MoveCamera(0.01f, 0.0f ,0.0f);
+		camera.MoveCameraLeft(0.01f);
 	} else if (glfwGetKey(windowPtr, GLFW_KEY_D)) {
-		camera.MoveCamera(-0.01f, 0.0f, 0.0f);
+		camera.MoveCameraLeft(-0.01f);
 	}
 
-	if (glfwGetKey(windowPtr, GLFW_KEY_LEFT)) {
-		camera.RotateCameraEuler(0.001f, 0.0f, 0.0f);
+	if (glfwGetKey(windowPtr, GLFW_KEY_UP)) {
+		camera.RotateCamera(0,0,-0.02f);
+	} else if (glfwGetKey(windowPtr, GLFW_KEY_DOWN)) {
+		camera.RotateCamera(0,0,0.02f);
+	} else if (glfwGetKey(windowPtr, GLFW_KEY_LEFT)) {
+		camera.RotateCamera(0,-0.02f,0);		
 	} else if (glfwGetKey(windowPtr, GLFW_KEY_RIGHT)) {
-		camera.RotateCameraEuler(-0.001f, 0.0f, 0.0f);
+		camera.RotateCamera(0,0.02f,0);
+	} else {
+		camera.RotateCamera(0,0,0);
 	}
 
 	if (glfwGetKey(windowPtr, GLFW_KEY_ESCAPE)) {

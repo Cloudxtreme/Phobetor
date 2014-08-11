@@ -18,12 +18,17 @@ public:
 
 	Mat4				GetProjectionView() const;
 	void				MoveCamera(const float x, const float y, const float z);
-	void				RotateCameraEuler(const float yaw, const float pitch, const float roll);
+	void				MoveCameraForward(const float speed);
+	void				MoveCameraLeft(const float speed);
+	void				RotateCamera(const float yaw, const float pitch, const float roll);
 
 private:
 	Mat4				projectionMatrix;
-	Mat4				viewMatrix;
+	Transform			viewTransform;
 
+	float				yaw;
+	float				pitch;
+	float				roll;
 };
 
 
