@@ -117,7 +117,6 @@ Mesh* OBJLoader::CreateMesh() const {
 			index++;
 		}
 	}
-	std::cout << "Face size: " << faces.size() << '\n';
 
 	Mesh* mesh = new Mesh();
 	mesh->SetData(data,dataSize*sizeof(float),6*sizeof(float));
