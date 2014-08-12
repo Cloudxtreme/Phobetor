@@ -95,9 +95,20 @@ int main() {
 
 	initLogger(LOG_DEBUG);
 
+	bool offscreenRendering = false;
+
 	Window window;
 
-	if (!window.Create(1280,720, "Phobetor")) {
+	bool windowStatus;
+
+	//Expression conditionals would have been nice here. But ternary are just too clumsy
+	if (!offscreenRendering) {
+		windowStatus = window.Create(1280,720, "Phobetor");
+	} else {
+		windowStatus = window.CreateOffscreen();
+	}
+
+	if (!windowStatus) {
 		FATAL("Failed to create window. Exiting!");
 		return -1;
 	}
@@ -108,8 +119,8 @@ int main() {
 
 	Renderer renderer;
 
-	renderer.Init();
-	renderer.GetCamera().MoveCamera(1,0,-2);
+	renderer.Init(offscreenRendering);
+	renderer.GetCamera().MoveCamera(0,0,-2);
 
 	OBJLoader loader;
 

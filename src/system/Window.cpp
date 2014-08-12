@@ -40,6 +40,13 @@ bool Window::Create(const int width, const int height, const std::string& title)
 	return !!window;
 }
 
+bool Window::CreateOffscreen() {
+
+	bool status = Create(1,1,"Hidden");
+	glfwHideWindow(window);
+	return status;
+}
+
 void Window::Destroy() {
 	glfwDestroyWindow(window);
 	glfwTerminate();

@@ -15,6 +15,7 @@ public:
 						explicit Window() {};
 
 	bool				Create(const int width, const int height, const std::string &title);
+	bool				CreateOffscreen();
 	void				Destroy();
 
 	void				ActivateContext();

@@ -17,7 +17,7 @@ class Renderer {
 public:
 						Renderer();
 
-	void				Init(const bool offscreen = false);
+	void				Init(const bool offscreenRendering = false);
 	void				Render();
 	void				Destroy();
 
@@ -26,11 +26,22 @@ public:
 
 private:
 
+	void				PrepareOffscreenRendering();
+
 	void 				walkSceneGraph(Node& rootNode, Shader& shader);
 
 	Camera				camera;
 	Node				rootNode;
 	Shader				shader; //TODO Make a hashmap for multiple shaders
+
+
+	/* Offscreen OpenGL-stuff*/
+
+	bool				offscreen;
+	GLuint 				fbo;
+	GLuint 				rboColor, rboDepth;
+	std::vector<GLubyte> data;
+
 };
 
 #endif // __RENDERER_RENDERER_H__
