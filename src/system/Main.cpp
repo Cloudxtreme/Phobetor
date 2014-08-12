@@ -6,13 +6,10 @@
 #include <Phobetor.h>
 #include "Window.h"
 #include "Timer.h"
-#include "../renderer/Mesh.h"
-#include "../renderer/Shader.h"
-#include "../renderer/Camera.h"
-#include "../scene/Node.h"
-#include "../scene/Spatial.h"
-#include "../scene/Geometry.h"
-#include "../asset/OBJLoader.h"
+#include <renderer/Camera.h>
+#include <renderer/Renderer.h>
+#include <scene/Node.h>
+#include <asset/OBJLoader.h>
 
 float data[] = {
 	-0.5f, 0.5f, 0.0f,	1.0f, 0.0f, 0.0f,
@@ -94,23 +91,6 @@ void processInput(GLFWwindow* windowPtr, Camera& camera) {
 
 }
 
-void walkSceneGraph(Node* rootNode, Shader& shader) {
-	for (Spatial* child : rootNode->GetChildren()) {
-		switch (child->GetSpatialType()) {
-			case Spatial::Geometry: {
-				Geometry* geom = static_cast<Geometry*>(child);
-				shader.SetModelMatrix(geom->GetWorldTransform().ToMatrix());
-				geom->GetMesh()->Render();
-				break;
-			}
-			case Spatial::Node: {
-				walkSceneGraph(static_cast<Node*>(child), shader);
-				break;						
-			}
-		}
-	}
-}
-
 int main() {
 
 	initLogger(LOG_DEBUG);
@@ -126,21 +106,15 @@ int main() {
 		return -1;
 	}
 
-	Camera camera;
-	camera.MoveCamera(0,0,-2);
+	Renderer renderer;
 
-	Shader shader;
-
-
-	shader.SetupShader("shaders/simple.vertex","shaders/simple.fragment");
-	
+	renderer.Init();
+	renderer.GetCamera().MoveCamera(1,0,-2);
 
 	OBJLoader loader;
 
-	Node* rootNode = new Node();
-
 	Node* modelNode = loader.Load("assets/Cube.obj");
-	rootNode->AttachChild(modelNode);
+	renderer.GetRootNode().AttachChild(modelNode);
 	modelNode->UpdateState();
 
 	Timer timer;
@@ -157,26 +131,15 @@ int main() {
 
 		timer.OnRender();
 
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LEQUAL);
+		renderer.Render();
 
-		glClearColor(1.0f,1.0f,1.0f,1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
+		processInput(window.GetWindowPointer(),renderer.GetCamera());
 
-		Mat4 projectionView = camera.GetProjectionView();
-		shader.UseShader(projectionView);
-		////shader.SetModelMatrix(rootNode->)
-		error("Shader");
-
-		processInput(window.GetWindowPointer(),camera);
-
-		walkSceneGraph(rootNode, shader);
-		
 
 		window.SwapBuffers();
 		window.PollEvents();
 	}
 
-
+	renderer.Destroy();
 	window.Destroy();
 }
